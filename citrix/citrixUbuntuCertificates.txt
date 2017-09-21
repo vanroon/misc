@@ -1,0 +1,2 @@
+sudo ln -s /usr/share/ca-certificates/mozilla/* /opt/Citrix/ICAClient/keystore/cacerts/
+sudo c_rehash /opt/Citrix/ICAClient/keystore/cacerts/
