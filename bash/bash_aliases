@@ -1,2 +1,0 @@
-#User configured aliases
-alias clip='xclip -selection clipboard' 
