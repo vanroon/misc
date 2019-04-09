@@ -1,1 +1,155 @@
-/home/evroon/.vimrc
+set nocompatible
+filetype off
+set tabstop=4
+"set t_Co=256
+syntax on
+
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+
+call vundle#rc()
+
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'itchyny/lightline.vim'
+
+Plugin 'scrooloose/nerdtree.git'
+
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+
+Plugin 'tpope/vim-fugitive'
+
+Plugin 'morhetz/gruvbox'
+
+Plugin 'dhruvasagar/vim-table-mode'
+
+Plugin 'aserebryakov/vim-todo-lists'
+
+Plugin 'vimwiki/vimwiki'
+
+Plugin 'tpope/vm-surround'
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+" plugin on GitHub repo
+" Plugin 'tpope/vim-fugitive'
+" plugin from http://vim-scripts.org/vim/scripts.html
+" Plugin 'L9'
+" Git plugin not hosted on GitHub
+" Plugin 'git://git.wincent.com/command-t.git'
+" git repos on your local machine (i.e. when working on your own plugin)
+" Plugin 'file:///home/gmarik/path/to/plugin'
+" The sparkup vim script is in a subdirectory of this repo called vim.
+" Pass the path to set the runtimepath properly.
+" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Install L9 and avoid a Naming conflict if you've already installed a
+" different version somewhere else.
+" Plugin 'ascenator/L9', {'name': 'newL9'}
+
+call vundle#end()
+
+filetype plugin indent on
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+
+" set line numbers
+set number
+
+" set search settings
+set is
+set ic
+
+" set gVim stuff
+set guioptions-=m "remove menubar
+set guioptions-=T "remove toolbar
+set go-=L "remove left scrollbar
+set go-=r "remove right scrollbar
+
+" set cursorline
+	augroup CursorLineOnlyInActiveWindow
+		autocmd!
+		autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+		autocmd WinLeave * setlocal nocursorline
+	augroup END	
+	
+" Always show statusbar
+set laststatus=2
+
+" Gruvbox settings
+let g:gruvbox_italic=1
+colorscheme gruvbox
+set background=dark
+
+" lightline config
+let g:lightline = {
+  \ 	'colorscheme': 'wombat',
+  \     'active': {
+  \         'left': [ ['mode', 'paste'], 
+  \		      ['gitbranch'],
+  \                   ['readonly', 'filename', 'modified'] ],
+  \         'right': [ ['lineinfo'], 
+  \                    ['percent'], 
+  \                    ['fileformat', 'fileencoding'] ]
+  \     },
+  \	'component_function': {
+  \	    'gitbranch': 'fugitive#head'
+  \	},
+  \ }
+
+" NERDTree config
+"   Don't open nerdtree on .vimrc or bash config files
+	autocmd vimenter * if !(
+							\(expand("%:t") ==? '.Xresources') ||
+							\(expand("%:t") ==? '.vimrc') || 
+							\(expand("%:t") ==? '.bash_aliases') || 
+							\(expand("%:t") ==? '.bash_profile') || 
+							\(expand("%:t") ==? 'config') || 
+							\(expand("%:t") ==? '.bashrc')
+							\) | NERDTree | endif
+
+	" Close vim if only window left is NERDTree window
+	autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+	" NERDTree git config
+	set shell=sh
+	" Map tree toggle to key
+	nmap <F2> :NERDTreeToggle<CR>
+
+" Vim Table Mode config
+	" Mapping
+	nmap <Leader>tm :TableModeToggle<CR>
+	let g:table_mode_corner='|'
+
+" Set default syntax
+	autocmd BufNewFile,BufRead *Jenkinsfile set syntax=groovy
+	autocmd BufNewFile,BufRead *jenkinsfile set syntax=groovy
+	autocmd BufNewFile,BufRead *jenkinsfile[0-9] set syntax=groovy
+	autocmd BufNewFile,BufRead *.groovy set syntax=groovy
+	autocmd BufNewFile,BufRead *.yaml set syntax=yml
+
+" Vimwiki settings
+" 	Disable table stuff to make tables with vim-table-plugin
+	let g:vimwiki_table_mappings=0
+	let g:vimwiki_table_auto_fmt=0
+	let g:vimwiki_folding='list'
+
+" Persistent folding
+augroup AutoSaveFolds
+		autocmd!
+		autocmd BufWinLeave * mkview
+		autocmd BufRead * silent loadview
+"		autocmd BufWinEnter * silent loadview
+""		autocmd BufWinEnter * 1
+augroup END
